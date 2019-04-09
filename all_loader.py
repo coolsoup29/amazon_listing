@@ -51,7 +51,7 @@ def selenium_loader(url):
     driver = webdriver.Chrome(CHROM_PATH,options=chrome_options,desired_capabilities=capa)  # 关键!记得添加
     wait = WebDriverWait(driver, 20)
     driver.get(url)
-    wait.until(EC.presence_of_element_located((By.XPATH, "//li[@id='SalesRank']")))  # 这里可选择多个selector
+    wait.until(EC.presence_of_element_located((By.XPATH, "//li[@class='a-disabled']")))  # 这里可选择多个selector
     html=driver.page_source
     return html
 
