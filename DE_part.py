@@ -1,0 +1,98 @@
+from bs4 import BeautifulSoup
+from urllib.parse import unquote
+import sys
+from all_loader import *
+
+
+
+
+
+def get_next(soup):
+    stime=str(int(time.time()))
+    try:
+        # soup = BeautifulSoup(html, 'html.parser')
+        next_page = 'https://www.amazon.de' + soup.find_all('li', 'a-last')[0].contents[0].attrs['href']
+        next_page = next_page.split("qid=")[0]+"qid="+stime+ "&" +next_page.split("qid=")[1].split('&')[1]
+        return next_page
+    except Exception as e:
+        print(e)
+        return 0
+
+
+def current_page_get(html):
+    try:
+        soup=BeautifulSoup(html,'html.parser')
+        tags=soup.find_all('li','a-selected')
+        current_page=tags[0].contents[0].text
+        print(current_page)
+        return current_page
+    except:
+        return 1
+
+
+
+def DE_analysis(html,page,search_asin,current_url):
+    # page=1
+    current_page = current_page_get(html)
+    print("当前页数是:%s"%current_page)
+    soup=BeautifulSoup(html,'html.parser')
+    tags=soup.find_all('h5','a-color-base s-line-clamp-4')
+    if len(tags)==0:
+        tags = soup.find_all('h5', 'a-color-base s-line-clamp-2')
+        if len(tags)!=0:
+            for tag in tags:
+                sp = tag.parent.contents[1].text
+                if sp == 'Gesponsert':
+                    sp = 'Gesponsert'
+                else:
+                    sp = '非广告'
+                url = tag.contents[1].attrs['href']
+                url = unquote(url, 'utf-8')
+                asin = url.split('/dp/')[1].split('/')[0]
+                print(asin)
+                if asin == search_asin:
+                    print('当前页数是', current_page, '排名:', tags.index(tag), "广告:", sp)
+                    with open('test.html', 'w', encoding='utf-8') as f:
+                        f.write(html)
+                    sys.exit()
+                    return 'GG'
+        else:
+            with open('test.html', 'w', encoding='utf-8') as f:
+                f.write(html)
+            robot_tags=soup.find_all('button')
+            try:
+                robot_tags[0].text=='Weiter shoppen'
+                print('be checked as robot!!!')
+                html=loader(current_url)
+                DE_analysis(html,page,search_asin,current_url)
+            except Exception as e:
+                print("!!!!!!!!!!!!",e)
+
+                sys.exit()
+                return 'GG'
+    else:
+        print(len(tags))
+        for tag in tags:
+            sp=tag.parent.contents[1].text
+            if sp=='Sponsored':
+                sp='Sponsored'
+            else:
+                sp='非广告'
+            url = tag.contents[1].attrs['href']
+            url=unquote(url,'utf-8')
+            asin=url.split('/dp/')[1].split('/')[0]
+            print(asin)
+            if asin==search_asin:
+                print('当前页数是',current_page,'排名:',tags.index(tag),"广告:",sp)
+                with open('test.html','w',encoding='utf-8') as f:
+                    f.write(html)
+                sys.exit()
+                return 'GG'
+    next_page=get_next(soup)
+    print('next>>',next_page)
+    page+=1
+    if next_page==0:
+        print('全部抓取完成')
+    else:
+        html=loader(next_page)
+        DE_analysis(html,page,search_asin,next_page)

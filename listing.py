@@ -1,3 +1,6 @@
+from UK_part import *
+from DE_part import *
+from CA_part import *
 from IT_part import *
 from US_part import *
 from ES_part import *
@@ -57,8 +60,8 @@ def main():
         US_analysis(html,page,asin)
         driver.quit()
     elif site=='UK':
-        # UK_analysis(html,page,asin)
-        print(111)
+        UK_analysis(html,page,asin,url)
+        # print(111)
     elif site=='FR':
         FR_analysis(html, page, asin,url)
     elif site=='ES':
@@ -68,9 +71,11 @@ def main():
         # url='https://www.amazon.it/'
         IT_analysis(html,page,asin,url)
     elif site=='CA':
-        url='https://www.amazon.ca/'
+        # url='https://www.amazon.ca/'
+        CA_analysis(html,page,asin,url)
     elif site=='DE':
-        url='https://www.amazon.de/'
+        # url='https://www.amazon.de/'
+        DE_analysis(html,page,asin,url)
     else:
         print("请输入正确的内容>>")
         get_base_url()

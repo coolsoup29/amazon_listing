@@ -35,8 +35,9 @@ user_agent = [
 
 # 注意修改　54 行的等待元素规则
 def selenium_loader(url):
+
     chrome_options = Options()
-    chrome_options.add_argument('--headless')  # 无头模式
+    # chrome_options.add_argument('--headless')  # 无头模式
     chrome_options.add_argument('--disable-gpu')
     prefs = {"profile.managed_default_content_settings.images": 2} #使用无图模式  #
     # chrome_options.add_experimental_option("prefs", prefs)
@@ -51,7 +52,7 @@ def selenium_loader(url):
     driver = webdriver.Chrome(CHROM_PATH,options=chrome_options,desired_capabilities=capa)  # 关键!记得添加
     wait = WebDriverWait(driver, 20)
     driver.get(url)
-    wait.until(EC.presence_of_element_located((By.XPATH, "//li[@class='a-disabled']")))  # 这里可选择多个selector
+    wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='s-result-list sg-row']")))  # 这里可选择多个selector
     html=driver.page_source
     return html
 
