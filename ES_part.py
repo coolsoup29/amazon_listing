@@ -11,6 +11,16 @@ from urllib.parse import unquote
 import sys
 from all_loader import *
 
+def current_page_get(html):
+    try:
+        soup=BeautifulSoup(html,'html.parser')
+        tags=soup.find_all('li','a-selected')
+        current_page=tags[0].contents[0].text
+        print(current_page)
+        return current_page
+    except:
+        return 1
+
 
 def ES_get_sp(tag):
     try:
@@ -39,6 +49,7 @@ def ES_get_next(soup):
 
 def ES_analysis(html,page,search_asin,url):
     # page=1
+    current_page = current_page_get(html)
     global max_page
     if page==1:
         soup=BeautifulSoup(html,'html.parser')
@@ -67,7 +78,7 @@ def ES_analysis(html,page,search_asin,url):
                 # print(asin,sp)
                 if asin == search_asin:
                     # print(tag.parent.contents[1].text)
-                    print('当前页数是', page, '排名:', tags.index(tag), "广告:", sp)
+                    print('当前页数是', current_page, '排名:', tags.index(tag), "广告:", sp)
                     with open('test.html', 'w', encoding='utf-8') as f:
                         f.write(html)
                     sys.exit()
@@ -95,7 +106,7 @@ def ES_analysis(html,page,search_asin,url):
                 # print(asin,sp)
                 if asin == search_asin:
                     # print(tag.parent.contents[1].text)
-                    print('当前页数是', page, '排名:', tags.index(tag), "广告:", sp)
+                    print('当前页数是', current_page, '排名:', tags.index(tag), "广告:", sp)
                     with open('test.html', 'w', encoding='utf-8') as f:
                         f.write(html)
                     sys.exit()
@@ -126,7 +137,7 @@ def ES_analysis(html,page,search_asin,url):
             # print(asin,sp)
             if asin==search_asin:
                 # print(tag.parent.contents.contents[1].text)
-                print('\r当前页数是',page,'排名:',tags.index(tag),"广告:",sp,end='')
+                print('\r当前页数是',current_page,'排名:',tags.index(tag),"广告:",sp,end='')
                 with open('test.html','w',encoding='utf-8') as f:
                     f.write(html)
                 sys.exit()

@@ -4,7 +4,15 @@ import sys
 from all_loader import *
 
 
-
+def current_page_get(html):
+    try:
+        soup=BeautifulSoup(html,'html.parser')
+        tags=soup.find_all('li','a-selected')
+        current_page=tags[0].contents[0].text
+        print(current_page)
+        return current_page
+    except:
+        return 1
 
 
 def get_next(soup):
@@ -22,7 +30,8 @@ def get_next(soup):
 
 def US_analysis(html,page,search_asin):
     # page=1
-    print("当前页数是:%s"%page)
+    current_page = current_page_get(html)
+    print("当前页数是:%s"%current_page)
     soup=BeautifulSoup(html,'html.parser')
     tags=soup.find_all('h5','a-color-base s-line-clamp-4')
     print(len(tags))
@@ -37,7 +46,7 @@ def US_analysis(html,page,search_asin):
         asin=url.split('/dp/')[1].split('/')[0]
         # print(asin,sp)
         if asin==search_asin:
-            print('当前页数是',page,'排名:',tags.index(tag),"广告:",sp)
+            print('当前页数是',current_page,'排名:',tags.index(tag),"广告:",sp)
             with open('test.html','w',encoding='utf-8') as f:
                 f.write(html)
             sys.exit()
